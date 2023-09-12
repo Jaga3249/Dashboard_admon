@@ -5,9 +5,15 @@ const getOrders = () => {
     )
 }
 export default getOrders;
- export const getRevenue= () => {
-    return(
-fetch('https://dummyjson.com/carts')
-.then(res => res.json())
+export const getRevenue = () => {
+    return (
+        fetch('https://dummyjson.com/carts')
+            .then(res => res.json())
+    )
+}
+export const getInventory = () => {
+    return (
+        fetch('https://dummyjson.com/products')
+            .then(res => res.json())
     )
 }
