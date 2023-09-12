@@ -1,30 +1,66 @@
-import { Menu } from "antd";
-import React from "react";
+
+
+import React, { useState } from 'react';
 import {
-  AppstoreOutlined,
   ShoppingCartOutlined,
   ShopOutlined,
   UserAddOutlined,
-} from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+  AppstoreOutlined,
+  // ContainerOutlined,
+  // DesktopOutlined,
+  // MailOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  // PieChartOutlined,
+} from '@ant-design/icons';
+import { Button, Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
+function getItem(label, key, icon, children, type) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+    type,
+  };
+}
+const items = [
+  getItem('Dashboard', '/', <AppstoreOutlined />),
+  getItem('Inventory', '/inventory', <ShopOutlined />),
+  getItem('Order', '/orders', <ShoppingCartOutlined />),
+  getItem('Customers', '/customers', <UserAddOutlined />),
 
+
+];
 const SideMenu = () => {
   const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
   return (
-    <div>
+    <div
+      style={{
+        width: 260,
+      }}
+    >
+      <Button
+        type="primary"
+        onClick={toggleCollapsed}
+
+      >
+        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+      </Button>
       <Menu
-        onClick={(item) => {
-          navigate(item.key);
-        }}
-        items={[
-          { label: "Dashboard", key: "/", icon: <AppstoreOutlined /> },
-          { label: "Inventory", key: "/inventory", icon: <ShopOutlined /> },
-          { label: "Orders", key: "/orders", icon: <ShoppingCartOutlined /> },
-          { label: "Customers", key: "/customers", icon: <UserAddOutlined /> },
-        ]}
-      ></Menu>
+        defaultSelectedKeys={['/']}
+         mode="inline"
+        
+        inlineCollapsed={collapsed}
+        items={items}
+        onClick={(items) => navigate(items.key)}
+
+      />
     </div>
   );
 };
-
 export default SideMenu;

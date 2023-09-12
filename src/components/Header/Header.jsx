@@ -6,8 +6,9 @@ const Header = () => {
   return (
     <div className="header">
       <img
-        src="https://yt3.ggpht.com/ytc/AOPolaStHISCvwwZ-Ci25pFMOmEp9CHaT7mdMFXEaCKl=s48-c-k-c0x00ffffff-no-rj"
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgWKIja6-HPRPnRLGd3Dn7vN4qclEMfmO52thNpi1CAg&s"
         alt=""
+       style={{width:60,cursor: "pointer",backgroundColor:"white"}}
       />
       <Typography.Title>Admin Dasboard</Typography.Title>
       <Space>
