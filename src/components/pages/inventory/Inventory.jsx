@@ -66,7 +66,7 @@ const Inventory = () => {
   return (
     <Space direction="vertical" size={20}>
       <Typography.Title level={4}>Inventory</Typography.Title>
-      <Table dataSource={inventory} columns={columns} pagination={{pageSize:5}}/>
+      <Table dataSource={inventory} columns={columns} pagination={{pageSize:5}} loading={loading}/>
     </Space>
   );
 };

@@ -4,7 +4,7 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import { UserAddOutlined } from "@ant-design/icons";
 import { DollarOutlined } from "@ant-design/icons";
 import { ShopOutlined } from "@ant-design/icons";
-import getOrders, { getRevenue } from "../../../Api";
+import getOrders, { getCustomers, getInventory, getRevenue } from "../../../Api";
 
 import {
   Chart as ChartJS,
@@ -26,12 +26,46 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const [orders, setOrders] = useState(0);
+  const [inventory, setInventory] = useState(0);
+  const [customers, setCustomers] = useState(0);
+  const [revenue, setRevenue] = useState(0);
+  useEffect(()=>{
+    getCustomers().then((res)=>{
+      setCustomers(res.total);
+    })
+    getInventory().then((res)=>{
+      setInventory(res.total)
+    })
+    getOrders().then((res)=>{
+      setOrders(res.total)
+      setRevenue(res.discountedTotal)
+    })
+    
+    
+  },[])
   return (
     <Space direction="vertical" size={10}>
       <Typography.Title level={4} style={{ fontWeight: "bold" }}>
         Dashboard
       </Typography.Title>
       <Space>
+        <DashBoardCard
+          icon={
+            <UserAddOutlined
+              style={{
+                fontSize: "20px",
+                backgroundColor: "rgba(0,0,0,0.25)",
+                color: "purple",
+                padding: "10px",
+                borderRadius: "15px",
+                cursor: "pointer",
+              }}
+            />
+          }
+          title={"Customers"}
+          value={customers}
+        />
         <DashBoardCard
           icon={
             <ShoppingCartOutlined
@@ -46,7 +80,7 @@ const Dashboard = () => {
             />
           }
           title={"orders"}
-          value={1234}
+          value={orders}
         />
         <DashBoardCard
           icon={
@@ -62,24 +96,9 @@ const Dashboard = () => {
             />
           }
           title={"Inventory"}
-          value={1234}
+          value={inventory}
         />
-        <DashBoardCard
-          icon={
-            <UserAddOutlined
-              style={{
-                fontSize: "20px",
-                backgroundColor: "rgba(0,0,0,0.25)",
-                color: "purple",
-                padding: "10px",
-                borderRadius: "15px",
-                cursor: "pointer",
-              }}
-            />
-          }
-          title={"Customers"}
-          value={1234}
-        />
+
         <DashBoardCard
           icon={
             <DollarOutlined
@@ -94,14 +113,14 @@ const Dashboard = () => {
             />
           }
           title={"Revenue"}
-          value={1234}
+          value={revenue}
         />
       </Space>
-    <Space>
-    <RecentOrders />
-    <DashboardChart/>
+      <Space>
+        <RecentOrders />
+        <DashboardChart />
 
-    </Space>
+      </Space>
     </Space>
 
 
@@ -109,6 +128,9 @@ const Dashboard = () => {
 };
 
 const DashBoardCard = ({ title, value, icon }) => {
+ 
+
+
   return (
     <Card>
       <Space>
@@ -122,7 +144,7 @@ const DashBoardCard = ({ title, value, icon }) => {
 const RecentOrders = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-   const columns = [
+  const columns = [
     {
       title: 'Title',
       dataIndex: 'title',
@@ -148,7 +170,7 @@ const RecentOrders = () => {
       setLoading(false)
     })
   }, [])
- return (
+  return (
     <Space direction="vertical" size={20}>
 
       <Typography.Text>RecentOrders</Typography.Text>
@@ -160,16 +182,16 @@ const RecentOrders = () => {
 
   )
 }
-const DashboardChart=()=>{
-  const[revenueDate,setRevenueDate] =useState({
-    labels:[],
-    datasets:[]
+const DashboardChart = () => {
+  const [revenueDate, setRevenueDate] = useState({
+    labels: [],
+    datasets: []
   })
- 
+
   const options = {
-      plugins: {
+    plugins: {
       legend: {
-        position: 'bottom' ,
+        position: 'bottom',
       },
       title: {
         display: true,
@@ -177,38 +199,38 @@ const DashboardChart=()=>{
       },
     },
   };
-  
-useEffect(()=>{
-   getRevenue().then((res)=>{
- const labels=res?.carts?.map((cart)=>{
-    return `User-${cart.userId
-      }`
-    })
-    const data=res?.carts?.map((cart)=>{
-      
-      return cart.discountedTotal;
+
+  useEffect(() => {
+    getRevenue().then((res) => {
+      const labels = res?.carts?.map((cart) => {
+        return `User-${cart.userId
+          }`
+      })
+      const data = res?.carts?.map((cart) => {
+
+        return cart.discountedTotal;
+
+      })
+      const dataSource = {
+        labels,
+        datasets: [
+          {
+            label: 'Dataset 1',
+            data: data,
+            backgroundColor: 'rgba(255, 0, 0)',
+          }
+        ],
+      };
+      setRevenueDate(dataSource)
 
     })
-    const dataSource = {
-      labels,
-      datasets: [
-        {
-          label: 'Dataset 1',
-          data: data,
-          backgroundColor: 'rgba(255, 0, 0)',
-        }
-      ],
-    };
-    setRevenueDate(dataSource)
 
-   }) 
-   console.log(revenueDate)
-  },[])
+  }, [])
 
-  return(
-   <Card style={{width:500,height:350}}>
-     <Bar options={options} data={revenueDate} />
-   </Card>
+  return (
+    <Card style={{ width: 500, height: 350 }}>
+      <Bar options={options} data={revenueDate} />
+    </Card>
   )
 }
 export default Dashboard;
